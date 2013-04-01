@@ -1,0 +1,992 @@
+#+PROPERTY: exports both
+
+* Parse the Iizumi data
+  :PROPERTIES:
+  :results:  output replace
+  :session:  *shell*
+  :END:
+
+
+** Download and unpack
+
+#+BEGIN_SRC sh
+  wget -nv -P data http://geointa.inta.gov.ar/publico/iizumi/gdhy.zip
+#+END_SRC
+
+#+BEGIN_SRC sh
+  unzip -l data/gdhy.zip
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Archive:  data/gdhy.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  02-26-2013 02:31   gdhy/
+  2382574  02-26-2013 00:59   gdhy/figures.zip
+     4393  02-26-2013 01:44   gdhy/index.html
+     6023  02-26-2013 02:30   gdhy/readme.txt
+   359434  02-26-2013 00:55   gdhy/maize_low_resolution.jpg
+ 12982060  02-26-2013 01:16   gdhy/gdhy_2013JAN29_soybean.zip
+ 39751261  02-26-2013 01:17   gdhy/gdhy_2013JAN29_rice.zip
+ 41461605  02-26-2013 01:18   gdhy/gdhy_2013JAN29_wheat.zip
+ 41998378  02-26-2013 01:16   gdhy/gdhy_2013JAN29_maize.zip
+---------                     -------
+138945728                     9 files
+#+end_example
+
+#+BEGIN_SRC sh
+  unzip data/gdhy.zip -d data 
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Archive:  data/gdhy.zip
+   creating: data/gdhy/
+  inflating: data/gdhy/figures.zip   
+  inflating: data/gdhy/index.html    
+  inflating: data/gdhy/readme.txt    
+  inflating: data/gdhy/maize_low_resolution.jpg  
+  inflating: data/gdhy/gdhy_2013JAN29_soybean.zip  
+  inflating: data/gdhy/gdhy_2013JAN29_rice.zip  
+  inflating: data/gdhy/gdhy_2013JAN29_wheat.zip  
+  inflating: data/gdhy/gdhy_2013JAN29_maize.zip
+#+end_example
+
+#+BEGIN_SRC sh
+  unzip -l data/gdhy/gdhy_2013JAN29_maize.zip
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Archive:  data/gdhy/gdhy_2013JAN29_maize.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1986.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1987.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1988.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1989.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1990.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1991.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1992.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1993.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1994.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1995.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1996.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1997.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1998.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1999.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_2000.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_2001.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_2002.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_2003.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_2004.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_2005.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_2006.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1982.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1983.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1984.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1985.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1986.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1987.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1988.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1989.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1990.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1991.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1992.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1993.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1994.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1995.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1996.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1997.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1998.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_1999.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_2000.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_2001.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_2002.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_2003.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_2004.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_2005.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_major_2006.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1982.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1983.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1984.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1985.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1986.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1987.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1988.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1989.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1990.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1991.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1992.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1993.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1994.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1995.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1996.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1997.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1998.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_1999.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_2000.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_2001.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_2002.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_2003.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_2004.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_2005.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_second_2006.dat
+ 11571426  02-26-2013 10:11   gdhy_2013JAN29_maize_1982.dat
+ 11571426  02-26-2013 10:11   gdhy_2013JAN29_maize_1983.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1984.dat
+ 11571426  02-26-2013 10:12   gdhy_2013JAN29_maize_1985.dat
+---------                     -------
+867856950                     75 files
+#+end_example
+
+#+BEGIN_SRC sh
+  mkdir data/gdhy/gdhy_2013JAN29_maize
+  unzip data/gdhy/gdhy_2013JAN29_maize.zip \
+      gdhy_2013JAN29_maize_2006.dat \
+      -d data/gdhy/gdhy_2013JAN29_maize
+#+END_SRC
+
+#+RESULTS:
+: 
+: > > Archive:  data/gdhy/gdhy_2013JAN29_maize.zip
+:   inflating: data/gdhy/gdhy_2013JAN29_maize/gdhy_2013JAN29_maize_2006.dat
+
+
+** Read into R
+   :PROPERTIES:
+   :session:  *R:3*
+   :END:
+
+#+BEGIN_SRC R
+  
+#+END_SRC
+
+
+* Resample our GDD and totPrecip data to match
+
+
+**** TODO figure out how to suppress or swallow CDO progress output 
+
+Annoying control characters.
+
+
+** Try CDO remap
+
+#+BEGIN_SRC sh
+  IFILE=/project/joshuaelliott/data/global_climate_data/
+  IFILE+=GDD/ncep/downscaled/GDD_8-30_2006.nc
+  cdo remapnn,n80  $IFILE gdd/GDD_8-30_2006.nc
+#+END_SRC
+
+#+RESULTS:
+: 
+: [nbest@midway-login1 data]$ 
+: cdo remapnn (Abort): Unsupported grid type: generic
+
+This must be because the input file's grid is not adequately specified.
+
+
+*** Fix "Unsupported grid type: generic" error
+
+#+BEGIN_SRC sh
+  ncdump -h $IFILE | head
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+netcdf GDD_8-30_2006 {
+dimensions:
+	lat = 1524 ;
+	lon = 4320 ;
+variables:
+	float lat(lat) ;
+90)" ;
+	float lon(lon) ;
+360)" ;
+	float min_maize_GDD(lat, lon) ;
+#+end_example
+
+This is a global $5'$ that runs from 67N to 60S.  We have to write a
+CDO grid description file.
+
+#+BEGIN_SRC sh :results silent
+  cat <<EOF > psims_grid.cdo
+  gridtype = lonlat 
+  xsize    = 4320
+  ysize    = 1524
+  xfirst   =    0.04166667
+  xinc     =    0.08333333 
+  yfirst   =  -59.95833 
+  yinc     =    0.08333333
+  EOF
+#+END_SRC
+
+#+BEGIN_SRC sh :exports none
+  cat psims_grid.cdo
+#+END_SRC
+
+#+RESULTS:
+: gridtype = lonlat 
+: xsize    = 4320
+: ysize    = 1524
+: xfirst   =    0.04166667
+: xinc     =    0.08333333 
+: yfirst   =  -59.95833 
+: yinc     =    0.08333333
+
+
+#+BEGIN_SRC sh
+  cdo setgrid,psims_grid.cdo $IFILE gdd/GDD_8-30_2006_reg.nc
+#+END_SRC
+
+#+RESULTS:
+: cdo setgrid: Processed 98755200 values from 15 variables over 1 timestep ( 1.62s )
+
+
+*** Inspect the output header
+
+#+BEGIN_SRC sh
+  ncdump -h gdd/GDD_8-30_2006_reg.nc
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+netcdf GDD_8-30_2006_reg {
+dimensions:
+	lon = 4320 ;
+	lat = 1524 ;
+variables:
+	double lon(lon) ;
+		lon:standard_name = "longitude" ;
+		lon:long_name = "longitude" ;
+		lon:units = "degrees_east" ;
+		lon:axis = "X" ;
+	double lat(lat) ;
+		lat:standard_name = "latitude" ;
+		lat:long_name = "latitude" ;
+		lat:units = "degrees_north" ;
+		lat:axis = "Y" ;
+	float min_maize_GDD(lat, lon) ;
+		min_maize_GDD:units = "Growing degree days" ;
+		min_maize_GDD:description = "Maize GDD from mean planting to early harvest" ;
+		min_maize_GDD:missing = "-9999." ;
+	float mid_maize_GDD(lat, lon) ;
+		mid_maize_GDD:units = "Growing degree days" ;
+		mid_maize_GDD:description = "Maize GDD from mean planting to mean harvest" ;
+		mid_maize_GDD:missing = "-9999." ;
+	float max_maize_GDD(lat, lon) ;
+		max_maize_GDD:units = "Growing degree days" ;
+		max_maize_GDD:description = "Maize GDD from early planting to mean harvest" ;
+		max_maize_GDD:missing = "-9999." ;
+	float min_rice_GDD(lat, lon) ;
+		min_rice_GDD:units = "Growing degree days" ;
+		min_rice_GDD:description = "Rice GDD from mean planting to early harvest" ;
+		min_rice_GDD:missing = "-9999." ;
+	float mid_rice_GDD(lat, lon) ;
+		mid_rice_GDD:units = "Growing degree days" ;
+		mid_rice_GDD:description = "Rice GDD from mean planting to mean harvest" ;
+		mid_rice_GDD:missing = "-9999." ;
+	float max_rice_GDD(lat, lon) ;
+		max_rice_GDD:units = "Growing degree days" ;
+		max_rice_GDD:description = "Rice GDD from early planting to mean harvest" ;
+		max_rice_GDD:missing = "-9999." ;
+	float min_soy_GDD(lat, lon) ;
+		min_soy_GDD:units = "Growing degree days" ;
+		min_soy_GDD:description = "Soybean GDD from mean planting to early harvest" ;
+		min_soy_GDD:missing = "-9999." ;
+	float mid_soy_GDD(lat, lon) ;
+		mid_soy_GDD:units = "Growing degree days" ;
+		mid_soy_GDD:description = "Soybean GDD from mean planting to mean harvest" ;
+		mid_soy_GDD:missing = "-9999." ;
+	float max_soy_GDD(lat, lon) ;
+		max_soy_GDD:units = "Growing degree days" ;
+		max_soy_GDD:description = "Soybean GDD from early planting to mean harvest" ;
+		max_soy_GDD:missing = "-9999." ;
+	float min_wheat_GDD(lat, lon) ;
+		min_wheat_GDD:units = "Growing degree days" ;
+		min_wheat_GDD:description = "Wheat GDD from mean planting to early harvest" ;
+		min_wheat_GDD:missing = "-9999." ;
+	float mid_wheat_GDD(lat, lon) ;
+		mid_wheat_GDD:units = "Growing degree days" ;
+		mid_wheat_GDD:description = "Wheat GDD from mean planting to mean harvest" ;
+		mid_wheat_GDD:missing = "-9999." ;
+	float max_wheat_GDD(lat, lon) ;
+		max_wheat_GDD:units = "Growing degree days" ;
+		max_wheat_GDD:description = "Wheat GDD from early planting to mean harvest" ;
+		max_wheat_GDD:missing = "-9999." ;
+	float min_winter_wheat_GDD(lat, lon) ;
+		min_winter_wheat_GDD:units = "Growing degree days" ;
+		min_winter_wheat_GDD:description = "Winter wheat GDD from mean planting to early harvest" ;
+		min_winter_wheat_GDD:missing = "-9999." ;
+	float mid_winter_wheat_GDD(lat, lon) ;
+		mid_winter_wheat_GDD:units = "Growing degree days" ;
+		mid_winter_wheat_GDD:description = "Winter wheat GDD from mean planting to mean harvest" ;
+		mid_winter_wheat_GDD:missing = "-9999." ;
+	float max_winter_wheat_GDD(lat, lon) ;
+		max_winter_wheat_GDD:units = "Growing degree days" ;
+		max_winter_wheat_GDD:description = "Winter wheat GDD from early planting to mean harvest" ;
+		max_winter_wheat_GDD:missing = "-9999." ;
+
+// global attributes:
+		:CDI = "Climate Data Interface version 1.5.9 (http://code.zmaw.de/projects/cdi)" ;
+		:Conventions = "CF-1.4" ;
+		:history = "Thu Mar 28 15:42:27 2013: cdo setgrid,psims_grid.cdo /project/joshuaelliott/data/global_climate_data/GDD/ncep/downscaled/GDD_8-30_2006.nc gdd/GDD_8-30_2006_reg.nc" ;
+		:Model = "ncep" ;
+		:Scaling = "downscaled" ;
+		:GDD_description = "(Tmax + Tmin)/2 - 10; sum of days during growing season, with tmax bounded at 30 C and tmin at 8 C" ;
+		:Growing_season = "derived from SAGE dataset" ;
+		:CDO = "Climate Data Operators version 1.5.9rc1 (http://code.zmaw.de/projects/cdo)" ;
+}
+#+end_example
+
+     
+** Try the remapping again using grid definition
+
+#+BEGIN_SRC sh
+  cdo -s remapnn,n80 gdd/GDD_8-30_2006_reg.nc gdd/GDD_8-30_2006.nc
+#+END_SRC
+
+#+RESULTS:
+: 
+:   0%  1%  2%  3%  4%  5%  6%  7%  8%  9% 10% 11% 12% 13% 14% 15% 16% 17% 18% 19% 20% 21% 22% 23% 24% 25% 26% 27% 28% 29% 30% 31% 32% 33% 34% 35% 36% 37% 38% 39% 40% 41% 42% 43% 44% 45% 46% 47% 48% 49% 50% 51% 52% 53% 54% 55% 56% 57% 58% 59% 60% 61% 62% 63% 64% 65% 66% 67% 68% 69% 70% 71% 72% 73% 74% 75% 76% 77% 78% 79% 80% 81% 82% 83% 84% 85% 86% 87% 88% 89% 90% 91% 92% 93% 94% 95% 96% 97% 98% 99%100%                 cdo remapnn: Processed 98755200 values from 15 variables over 1 timestep ( 54.59s )
+
+
+*** Inspect the new coordinates
+
+#+BEGIN_SRC sh
+  ncdump -c gdd/GDD_8-30_2006.nc
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+netcdf GDD_8-30_2006 {
+dimensions:
+	lon = 320 ;
+	lat = 160 ;
+variables:
+	double lon(lon) ;
+		lon:standard_name = "longitude" ;
+		lon:long_name = "longitude" ;
+		lon:units = "degrees_east" ;
+		lon:axis = "X" ;
+	double lat(lat) ;
+		lat:standard_name = "latitude" ;
+		lat:long_name = "latitude" ;
+		lat:units = "degrees_north" ;
+		lat:axis = "Y" ;
+	float min_maize_GDD(lat, lon) ;
+		min_maize_GDD:units = "Growing degree days" ;
+		min_maize_GDD:grid_type = "gaussian" ;
+		min_maize_GDD:description = "Maize GDD from mean planting to early harvest" ;
+		min_maize_GDD:missing = "-9999." ;
+		min_maize_GDD:_FillValue = -9.e+33f ;
+	float mid_maize_GDD(lat, lon) ;
+		mid_maize_GDD:units = "Growing degree days" ;
+		mid_maize_GDD:grid_type = "gaussian" ;
+		mid_maize_GDD:description = "Maize GDD from mean planting to mean harvest" ;
+		mid_maize_GDD:missing = "-9999." ;
+		mid_maize_GDD:_FillValue = -9.e+33f ;
+	float max_maize_GDD(lat, lon) ;
+		max_maize_GDD:units = "Growing degree days" ;
+		max_maize_GDD:grid_type = "gaussian" ;
+		max_maize_GDD:description = "Maize GDD from early planting to mean harvest" ;
+		max_maize_GDD:missing = "-9999." ;
+		max_maize_GDD:_FillValue = -9.e+33f ;
+	float min_rice_GDD(lat, lon) ;
+		min_rice_GDD:units = "Growing degree days" ;
+		min_rice_GDD:grid_type = "gaussian" ;
+		min_rice_GDD:description = "Rice GDD from mean planting to early harvest" ;
+		min_rice_GDD:missing = "-9999." ;
+		min_rice_GDD:_FillValue = -9.e+33f ;
+	float mid_rice_GDD(lat, lon) ;
+		mid_rice_GDD:units = "Growing degree days" ;
+		mid_rice_GDD:grid_type = "gaussian" ;
+		mid_rice_GDD:description = "Rice GDD from mean planting to mean harvest" ;
+		mid_rice_GDD:missing = "-9999." ;
+		mid_rice_GDD:_FillValue = -9.e+33f ;
+	float max_rice_GDD(lat, lon) ;
+		max_rice_GDD:units = "Growing degree days" ;
+		max_rice_GDD:grid_type = "gaussian" ;
+		max_rice_GDD:description = "Rice GDD from early planting to mean harvest" ;
+		max_rice_GDD:missing = "-9999." ;
+		max_rice_GDD:_FillValue = -9.e+33f ;
+	float min_soy_GDD(lat, lon) ;
+		min_soy_GDD:units = "Growing degree days" ;
+		min_soy_GDD:grid_type = "gaussian" ;
+		min_soy_GDD:description = "Soybean GDD from mean planting to early harvest" ;
+		min_soy_GDD:missing = "-9999." ;
+		min_soy_GDD:_FillValue = -9.e+33f ;
+	float mid_soy_GDD(lat, lon) ;
+		mid_soy_GDD:units = "Growing degree days" ;
+		mid_soy_GDD:grid_type = "gaussian" ;
+		mid_soy_GDD:description = "Soybean GDD from mean planting to mean harvest" ;
+		mid_soy_GDD:missing = "-9999." ;
+		mid_soy_GDD:_FillValue = -9.e+33f ;
+	float max_soy_GDD(lat, lon) ;
+		max_soy_GDD:units = "Growing degree days" ;
+		max_soy_GDD:grid_type = "gaussian" ;
+		max_soy_GDD:description = "Soybean GDD from early planting to mean harvest" ;
+		max_soy_GDD:missing = "-9999." ;
+		max_soy_GDD:_FillValue = -9.e+33f ;
+	float min_wheat_GDD(lat, lon) ;
+		min_wheat_GDD:units = "Growing degree days" ;
+		min_wheat_GDD:grid_type = "gaussian" ;
+		min_wheat_GDD:description = "Wheat GDD from mean planting to early harvest" ;
+		min_wheat_GDD:missing = "-9999." ;
+		min_wheat_GDD:_FillValue = -9.e+33f ;
+	float mid_wheat_GDD(lat, lon) ;
+		mid_wheat_GDD:units = "Growing degree days" ;
+		mid_wheat_GDD:grid_type = "gaussian" ;
+		mid_wheat_GDD:description = "Wheat GDD from mean planting to mean harvest" ;
+		mid_wheat_GDD:missing = "-9999." ;
+		mid_wheat_GDD:_FillValue = -9.e+33f ;
+	float max_wheat_GDD(lat, lon) ;
+		max_wheat_GDD:units = "Growing degree days" ;
+		max_wheat_GDD:grid_type = "gaussian" ;
+		max_wheat_GDD:description = "Wheat GDD from early planting to mean harvest" ;
+		max_wheat_GDD:missing = "-9999." ;
+		max_wheat_GDD:_FillValue = -9.e+33f ;
+	float min_winter_wheat_GDD(lat, lon) ;
+		min_winter_wheat_GDD:units = "Growing degree days" ;
+		min_winter_wheat_GDD:grid_type = "gaussian" ;
+		min_winter_wheat_GDD:description = "Winter wheat GDD from mean planting to early harvest" ;
+		min_winter_wheat_GDD:missing = "-9999." ;
+		min_winter_wheat_GDD:_FillValue = -9.e+33f ;
+	float mid_winter_wheat_GDD(lat, lon) ;
+		mid_winter_wheat_GDD:units = "Growing degree days" ;
+		mid_winter_wheat_GDD:grid_type = "gaussian" ;
+		mid_winter_wheat_GDD:description = "Winter wheat GDD from mean planting to mean harvest" ;
+		mid_winter_wheat_GDD:missing = "-9999." ;
+		mid_winter_wheat_GDD:_FillValue = -9.e+33f ;
+	float max_winter_wheat_GDD(lat, lon) ;
+		max_winter_wheat_GDD:units = "Growing degree days" ;
+		max_winter_wheat_GDD:grid_type = "gaussian" ;
+		max_winter_wheat_GDD:description = "Winter wheat GDD from early planting to mean harvest" ;
+		max_winter_wheat_GDD:missing = "-9999." ;
+		max_winter_wheat_GDD:_FillValue = -9.e+33f ;
+
+// global attributes:
+		:CDI = "Climate Data Interface version 1.5.9 (http://code.zmaw.de/projects/cdi)" ;
+		:Conventions = "CF-1.4" ;
+		:history = "Thu Mar 28 15:49:24 2013: cdo -s remapnn,n80 gdd/GDD_8-30_2006_reg.nc gdd/GDD_8-30_2006.nc\n",
+			"Thu Mar 28 15:42:27 2013: cdo setgrid,psims_grid.cdo /project/joshuaelliott/data/global_climate_data/GDD/ncep/downscaled/GDD_8-30_2006.nc gdd/GDD_8-30_2006_reg.nc" ;
+		:Model = "ncep" ;
+		:Scaling = "downscaled" ;
+		:GDD_description = "(Tmax + Tmin)/2 - 10; sum of days during growing season, with tmax bounded at 30 C and tmin at 8 C" ;
+		:Growing_season = "derived from SAGE dataset" ;
+		:CDO = "Climate Data Operators version 1.5.9rc1 (http://code.zmaw.de/projects/cdo)" ;
+data:
+
+ lon = 0, 1.125, 2.25, 3.375, 4.5, 5.625, 6.75, 7.875, 9, 10.125, 11.25, 
+    12.375, 13.5, 14.625, 15.75, 16.875, 18, 19.125, 20.25, 21.375, 22.5, 
+    23.625, 24.75, 25.875, 27, 28.125, 29.25, 30.375, 31.5, 32.625, 33.75, 
+    34.875, 36, 37.125, 38.25, 39.375, 40.5, 41.625, 42.75, 43.875, 45, 
+    46.125, 47.25, 48.375, 49.5, 50.625, 51.75, 52.875, 54, 55.125, 56.25, 
+    57.375, 58.5, 59.625, 60.75, 61.875, 63, 64.125, 65.25, 66.375, 67.5, 
+    68.625, 69.75, 70.875, 72, 73.125, 74.25, 75.375, 76.5, 77.625, 78.75, 
+    79.875, 81, 82.125, 83.25, 84.375, 85.5, 86.625, 87.75, 88.875, 90, 
+    91.125, 92.25, 93.375, 94.5, 95.625, 96.75, 97.875, 99, 100.125, 101.25, 
+    102.375, 103.5, 104.625, 105.75, 106.875, 108, 109.125, 110.25, 111.375, 
+    112.5, 113.625, 114.75, 115.875, 117, 118.125, 119.25, 120.375, 121.5, 
+    122.625, 123.75, 124.875, 126, 127.125, 128.25, 129.375, 130.5, 131.625, 
+    132.75, 133.875, 135, 136.125, 137.25, 138.375, 139.5, 140.625, 141.75, 
+    142.875, 144, 145.125, 146.25, 147.375, 148.5, 149.625, 150.75, 151.875, 
+    153, 154.125, 155.25, 156.375, 157.5, 158.625, 159.75, 160.875, 162, 
+    163.125, 164.25, 165.375, 166.5, 167.625, 168.75, 169.875, 171, 172.125, 
+    173.25, 174.375, 175.5, 176.625, 177.75, 178.875, 180, 181.125, 182.25, 
+    183.375, 184.5, 185.625, 186.75, 187.875, 189, 190.125, 191.25, 192.375, 
+    193.5, 194.625, 195.75, 196.875, 198, 199.125, 200.25, 201.375, 202.5, 
+    203.625, 204.75, 205.875, 207, 208.125, 209.25, 210.375, 211.5, 212.625, 
+    213.75, 214.875, 216, 217.125, 218.25, 219.375, 220.5, 221.625, 222.75, 
+    223.875, 225, 226.125, 227.25, 228.375, 229.5, 230.625, 231.75, 232.875, 
+    234, 235.125, 236.25, 237.375, 238.5, 239.625, 240.75, 241.875, 243, 
+    244.125, 245.25, 246.375, 247.5, 248.625, 249.75, 250.875, 252, 253.125, 
+    254.25, 255.375, 256.5, 257.625, 258.75, 259.875, 261, 262.125, 263.25, 
+    264.375, 265.5, 266.625, 267.75, 268.875, 270, 271.125, 272.25, 273.375, 
+    274.5, 275.625, 276.75, 277.875, 279, 280.125, 281.25, 282.375, 283.5, 
+    284.625, 285.75, 286.875, 288, 289.125, 290.25, 291.375, 292.5, 293.625, 
+    294.75, 295.875, 297, 298.125, 299.25, 300.375, 301.5, 302.625, 303.75, 
+    304.875, 306, 307.125, 308.25, 309.375, 310.5, 311.625, 312.75, 313.875, 
+    315, 316.125, 317.25, 318.375, 319.5, 320.625, 321.75, 322.875, 324, 
+    325.125, 326.25, 327.375, 328.5, 329.625, 330.75, 331.875, 333, 334.125, 
+    335.25, 336.375, 337.5, 338.625, 339.75, 340.875, 342, 343.125, 344.25, 
+    345.375, 346.5, 347.625, 348.75, 349.875, 351, 352.125, 353.25, 354.375, 
+    355.5, 356.625, 357.75, 358.875 ;
+
+ lat = 89.1415194264611, 88.0294288679515, 86.910770814124, 85.7906288836365, 
+    84.6699240844466, 83.5489469125421, 82.4278175240078, 81.3065945226689, 
+    80.1853098724772, 79.0639824814086, 77.9426242466729, 76.8212430271002, 
+    75.6998442220113, 74.5784316632959, 73.4570081455833, 72.3355757549091, 
+    71.214136079887, 70.0926903516245, 68.9712395389358, 67.8497844146698, 
+    66.7283256028822, 65.6068636130103, 64.4853988650433, 63.3639317083405, 
+    62.2424624358907, 61.1209912952521, 59.9995184970404, 58.8780442215827, 
+    57.7565686241836, 56.6350918393302, 55.5136139840772, 54.3921351607921, 
+    53.2706554593984, 52.1491749592204, 51.0276937305087, 49.906211835711, 
+    48.784729330535, 47.6632462648426, 46.5417626834057, 45.4202786265483, 
+    44.298794130694, 43.1773092288349, 42.0558239509352, 40.9343383242788, 
+    39.8128523737712, 38.6913661222016, 37.5698795904715, 36.4483927977945, 
+    35.3269057618723, 34.2054184990488, 33.0839310244466, 31.962443352088, 
+    30.8409554950018, 29.7194674653187, 28.5979792743565, 27.4764909326964, 
+    26.3550024502506, 25.2335138363243, 24.1120250996709, 22.9905362485413, 
+    21.8690472907301, 20.747558233616, 19.6260690841993, 18.5045798491365, 
+    17.3830905347709, 16.2616011471617, 15.1401116921107, 14.018622175186, 
+    12.8971326017452, 11.7756429769564, 10.6541533058176, 9.53266359317569, 
+    8.41117384374318, 7.28968406211511, 6.16819425278443, 5.04670442015713, 
+    3.92521456856645, 2.80372470228675, 1.68223482554707, 0.560744942544222, 
+    -0.560744942544222, -1.68223482554707, -2.80372470228675, 
+    -3.92521456856645, -5.04670442015713, -6.16819425278443, 
+    -7.28968406211511, -8.41117384374318, -9.53266359317569, 
+    -10.6541533058176, -11.7756429769564, -12.8971326017452, 
+    -14.018622175186, -15.1401116921107, -16.2616011471617, 
+    -17.3830905347709, -18.5045798491365, -19.6260690841993, 
+    -20.747558233616, -21.8690472907301, -22.9905362485413, 
+    -24.1120250996709, -25.2335138363243, -26.3550024502506, 
+    -27.4764909326964, -28.5979792743565, -29.7194674653187, 
+    -30.8409554950018, -31.962443352088, -33.0839310244466, 
+    -34.2054184990488, -35.3269057618723, -36.4483927977945, 
+    -37.5698795904715, -38.6913661222016, -39.8128523737712, 
+    -40.9343383242788, -42.0558239509352, -43.1773092288349, 
+    -44.298794130694, -45.4202786265483, -46.5417626834057, 
+    -47.6632462648426, -48.784729330535, -49.906211835711, -51.0276937305087, 
+    -52.1491749592204, -53.2706554593984, -54.3921351607921, 
+    -55.5136139840772, -56.6350918393302, -57.7565686241836, 
+    -58.8780442215827, -59.9995184970404, -61.1209912952521, 
+    -62.2424624358907, -63.3639317083405, -64.4853988650433, 
+    -65.6068636130103, -66.7283256028822, -67.8497844146698, 
+    -68.9712395389358, -70.0926903516245, -71.214136079887, 
+    -72.3355757549091, -73.4570081455833, -74.5784316632959, 
+    -75.6998442220113, -76.8212430271002, -77.9426242466729, 
+    -79.0639824814086, -80.1853098724772, -81.3065945226689, 
+    -82.4278175240078, -83.5489469125421, -84.6699240844466, 
+    -85.7906288836365, -86.910770814124, -88.0294288679515, -89.1415194264611 ;
+}
+#+end_example
+
+Success!
+
+
+*** Combine the operators
+
+#+BEGIN_SRC sh
+  cdo -f nc4 remapnn,n80 -setgrid,psims_grid.cdo $IFILE gdd/GDD_8-30_2006.nc4
+#+END_SRC
+
+#+RESULTS:
+: cdo remapnn: Started child process "setgrid,psims_grid.cdo /project/joshuaelliott/data/global_climate_data/GDD/ncep/downscaled/GDD_8-30_2006.nc (pipe1.1)".
+:   0%  1%  2%  3%  4%  5%  6%  7%  8%  9% 10% 11% 12% 13% 14% 15% 16% 17% 18% 19% 20% 21% 22% 23% 24% 25% 26% 27% 28% 29% 30% 31% 32% 33% 34% 35% 36% 37% 38% 39% 40% 41% 42% 43% 44% 45% 46% 47% 48% 49% 50% 51% 52% 53% 54% 55% 56% 57% 58% 59% 60% 61% 62% 63% 64% 65% 66% 67% 68% 69% 70% 71% 72% 73% 74% 75% 76% 77% 78% 79% 80% 81% 82% 83% 84% 85% 86% 87% 88% 89% 90% 91% 92% 93% 94% 95% 96% 97% 98% 99%100%                 cdo(2) setgrid: Processed 98755200 values from 15 variables over 1 timestep ( 55.37s )
+: cdo remapnn: Processed 98755200 values from 15 variables over 1 timestep ( 55.39s )
+
+
+** Compose the commands
+   :PROPERTIES:
+   :session:  *R:3*
+   :END:
+
+#+BEGIN_SRC R
+  library( stringr)
+  
+  library( doMC)
+  registerDoMC( cores= 10)
+  
+  
+  gddPath <-
+    "/project/joshuaelliott/data/global_climate_data/GDD/ncep/downscaled"
+  
+  precipPath <-
+    "/project/joshuaelliott/data/global_climate_data/totPrecip/ncep/downscaled"
+  
+  inFiles <-
+    c(
+      list.files(
+        path= gddPath,
+        pattern= "^GDD_8-30_....\\.nc$",
+        full.names= TRUE),
+      list.files(
+        path= precipPath,
+        pattern= "^totPrecip_....\\.nc$",
+        full.names= TRUE))
+  
+  destDirs <-
+    sapply(
+      str_split( inFiles, "/"),
+      function( l) l[6])
+  
+  for( path in paste( "data", unique( destDirs), sep="/")) {
+    dir.create( path= path)
+  }
+  
+  
+  cdoCommands <-
+    sprintf(
+      "cdo -f nc4 remapnn,n80 -setgrid,data/psims_grid.cdo %s data/%s/%s4",
+      inFiles,
+      destDirs,
+      basename( inFiles))
+#+END_SRC
+
+The first and last commands composed:
+
+#+BEGIN_SRC R :results value :exports results
+  cdoCommands[ 1]
+#+END_SRC
+
+#+RESULTS:
+: cdo -f nc4 remapnn,n80 -setgrid,data/psims_grid.cdo /project/joshuaelliott/data/global_climate_data/GDD/ncep/downscaled/GDD_8-30_1980.nc data/GDD/GDD_8-30_1980.nc4
+
+#+BEGIN_SRC R :results value :exports results
+  cdoCommands[ length( cdoCommands)]
+#+END_SRC
+
+#+RESULTS:
+: cdo -f nc4 remapnn,n80 -setgrid,data/psims_grid.cdo /project/joshuaelliott/data/global_climate_data/totPrecip/ncep/downscaled/totPrecip_2010.nc data/totPrecip/totPrecip_2010.nc4
+
+
+*** Run the jobs in parallel
+
+#+BEGIN_SRC R
+  cdoOutput <- 
+    foreach( cdo= cdoCommands) %dopar% {
+      system( paste( cdo, "2>&1"), intern= TRUE)
+    }
+#+END_SRC
+
+#+BEGIN_SRC R :results value
+  cdoOutput[ 1]
+#+END_SRC
+
+#+RESULTS:
+| setgrid,data/psims_grid.cdo /project/joshuaelliott/data/global_climate_data/GDD/ncep/downscaled/GDD_8-30_1980.nc (pipe1.1) |
+| cdo(2) setgrid: Processed 98755200 values from 15 variables over 1 timestep ( 57.70s )                                     |
+| cdo remapnn: Processed 98755200 values from 15 variables over 1 timestep ( 57.72s )                                        |
+
+#+BEGIN_SRC R :results value
+  cdoOutput[ length( cdoCommands)]
+#+END_SRC
+
+#+RESULTS:
+| setgrid,data/psims_grid.cdo /project/joshuaelliott/data/global_climate_data/totPrecip/ncep/downscaled/totPrecip_2010.nc (pipe1.1) |
+| cdo(2) setgrid: Processed 98755200 values from 15 variables over 1 timestep ( 54.05s )                                            |
+| cdo remapnn: Processed 98755200 values from 15 variables over 1 timestep ( 54.08s )                                               |
+
+
+* Create a continent/region mask using the FPU data
+
+Two possible stratgeies:
+
+1. Reclassify the raster
+2. Add new attributes to the shapefile and rasterize
+
+In either case because PROJ4 does not comprehend the Gaussian grid
+projection model we will have to convert to netCDF and remap as above.
+
+
+** Parse the FPU extended metadata
+
+#+BEGIN_SRC sh :results output :session *shell*
+  wget --no-verbose \
+      --output-document=data/fpu/FPU_metadata_changed.csv \
+      https://www.dropbox.com/s/thuyjl8a66a1kwe/FPU_metadata_changed.csv
+#+END_SRC
+
+#+RESULTS:
+: 
+: > 2013-03-29 10:06:24 URL:https://dl.dropbox.com/s/thuyjl8a66a1kwe/FPU_metadata_changed.csv?token_hash=AAG_3JSzKru2EvUrNhdZHcvQHOL5ymVWojflh6Ab2MWR2Q [27909/27909] -> "data/fpu/FPU_metadata_changed.csv" [1]
+
+The record for South Korea has a blank region designation so we edit
+in place before proceeding.
+
+#+BEGIN_SRC R :session *R:3*
+  library( data.table)
+  
+  fpuMeta <- read.csv( "data/fpu/FPU_metadata_changed.csv")
+  fpuMeta <- data.table( fpuMeta)
+  fpuMeta[ Region == "", Region := "Eastern Asia"]
+  fpuMeta[ , Region := factor( Region)]
+  fpuMeta[, RegionCode := as.integer( Region)]
+  
+  fpuRegions <- unique( fpuMeta[, list( RegionCode, Region)])
+  setkey( fpuRegions, RegionCode)
+#+END_SRC
+
+#+BEGIN_SRC R :session *R:3* :results value :exports results
+  fpuRegions
+#+END_SRC
+
+#+RESULTS:
+|  1 | Australia and Oceania           |
+|  2 | Central America                 |
+|  3 | Eastern Asia                    |
+|  4 | Eastern Europe and Central Asia |
+|  5 | Ice                             |
+|  6 | Indian Subcontinent             |
+|  7 | Latin America                   |
+|  8 | Middle and South Africa         |
+|  9 | Middle East                     |
+| 10 | North Africa                    |
+| 11 | North America                   |
+| 12 | Southeastern Asia               |
+| 13 | Western Europe                  |
+
+
+** Get the FPU data
+   :PROPERTIES:
+   :session:  *shell*
+   :results:  output
+   :END:
+   
+#+BEGIN_SRC sh
+  wget --no-verbose \
+      --output-document=data/fpu/fpu_mask.zip \
+      https://www.dropbox.com/s/mca8nrzwee1inne/fpu%20mask.zip
+#+END_SRC
+
+#+RESULTS:
+: 
+: > 2013-03-29 10:06:37 URL:https://dl.dropbox.com/s/mca8nrzwee1inne/fpu%20mask.zip?token_hash=AAGOJgvtnEYYiJOnxwujtfmZY52LU8ZMX_D6zYOLvsVUUA [104698/104698] -> "data/fpu/fpu_mask.zip" [1]
+
+#+BEGIN_SRC sh
+  unzip -l data/fpu/fpu_mask.zip
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Archive:  data/fpu/fpu_mask.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+  1379530  08-21-2012 06:48   fpu_rastermask.asc
+        0  09-05-2012 11:29   fpu_wgs84/
+    11254  07-23-2012 05:00   fpu_wgs84/fpu_polyg_wgs84_3_to_dieter.dbf
+      145  07-23-2012 04:59   fpu_wgs84/fpu_polyg_wgs84_3_to_dieter.prj
+     3332  07-23-2012 04:59   fpu_wgs84/fpu_polyg_wgs84_3_to_dieter.sbn
+      404  07-23-2012 04:59   fpu_wgs84/fpu_polyg_wgs84_3_to_dieter.sbx
+   494164  07-23-2012 05:00   fpu_wgs84/fpu_polyg_wgs84_3_to_dieter.shp
+     8323  07-23-2012 04:59   fpu_wgs84/fpu_polyg_wgs84_3_to_dieter.shp.xml
+     2572  07-23-2012 05:00   fpu_wgs84/fpu_polyg_wgs84_3_to_dieter.shx
+---------                     -------
+  1899724                     9 files
+#+end_example
+
+#+BEGIN_SRC sh
+  unzip data/fpu/fpu_mask.zip fpu_rastermask.asc -d data/fpu
+#+END_SRC
+
+#+RESULTS:
+: Archive:  data/fpu/fpu_mask.zip
+:   inflating: data/fpu/fpu_rastermask.asc
+
+
+** Reclassify the FPU raster mask
+   :PROPERTIES:
+   :session:  *R:3*
+   :END:
+
+#+BEGIN_SRC R :results silent
+  library( raster)
+  
+  fpuMask <- raster( "data/fpu/fpu_rastermask.asc")
+  proj4string( fpuMask) <- proj4string( raster())
+  fpuMask <- setMinMax( fpuMask)
+#+END_SRC
+
+#+BEGIN_SRC R :results output
+  fpuMask
+#+END_SRC
+
+#+RESULTS:
+: class       : RasterLayer 
+: dimensions  : 360, 720, 259200  (nrow, ncol, ncell)
+: resolution  : 0.5, 0.5  (x, y)
+: extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+: coord. ref. : +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
+: data source : /project/joshuaelliott/iizumi/data/fpu/fpu_rastermask.asc 
+: names       : fpu_rastermask 
+: values      : 1, 309  (min, max)
+
+#+BEGIN_SRC R
+  rcl <- fpuMeta[, list( is= Raster.value, becomes= RegionCode)]
+  
+  fpuRegionMask <-
+    setMinMax(
+      reclassify(
+        fpuMask,
+        as.matrix( rcl),
+        filename= "data/fpuRegionMask.tif",
+        datatype= "INT2U",
+        overwrite= TRUE))
+#+END_SRC
+
+#+BEGIN_SRC R :results output
+  fpuRegionMask
+#+END_SRC
+
+#+RESULTS:
+: class       : RasterLayer 
+: dimensions  : 360, 720, 259200  (nrow, ncol, ncell)
+: resolution  : 0.5, 0.5  (x, y)
+: extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+: coord. ref. : +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 
+: data source : /project/joshuaelliott/iizumi/data/fpuRegionMask.tif 
+: names       : fpuRegionMask 
+: values      : 1, 13  (min, max)
+
+
+*** TODO link to images
+
+
+*** TODO write code to produce images
+
+For now I used QGIS to create them.
+
+
+** Convert to netCDF and remap
+   :PROPERTIES:
+   :session:  *shell*
+   :results:  output
+   :END:
+
+
+*** Convert
+
+#+BEGIN_SRC sh
+  gdal_translate -of netCDF -co "FORMAT=NC4" -ot Byte \
+      data/fpuRegionMask.tif data/fpuRegionMask.nc4
+#+END_SRC
+
+#+RESULTS:
+: 
+: Input file size is 720, 360
+: 0...10...20...30...40...50...60...70...80...90...100 - done.
+
+
+*** Inspect
+
+#+BEGIN_SRC sh
+  ncdump -h data/fpuRegionMask.nc4
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+netcdf fpuRegionMask {
+dimensions:
+	lon = 720 ;
+	lat = 360 ;
+variables:
+	ubyte Band1(lat, lon) ;
+		Band1:long_name = "GDAL Band Number 1" ;
+		Band1:_FillValue = 255UB ;
+		Band1:grid_mapping = "crs" ;
+		Band1:coordinates = "lon lat" ;
+	char crs ;
+		crs:grid_mapping_name = "latitude_longitude" ;
+		crs:longitude_of_prime_meridian = 0. ;
+		crs:semi_major_axis = 6378137. ;
+		crs:inverse_flattening = 298.257223563 ;
+		crs:spatial_ref = "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433],AUTHORITY[\"EPSG\",\"4326\"]]" ;
+		crs:GeoTransform = "-180 0.5 0 90 0 -0.5 " ;
+	double lat(lat) ;
+		lat:standard_name = "latitude" ;
+		lat:long_name = "latitude" ;
+		lat:units = "degrees_north" ;
+	double lon(lon) ;
+		lon:standard_name = "longitude" ;
+		lon:long_name = "longitude" ;
+		lon:units = "degrees_east" ;
+
+// global attributes:
+		:GDAL_AREA_OR_POINT = "Area" ;
+		:Conventions = "CF-1.5" ;
+		:GDAL = "GDAL 1.9.2, released 2012/10/08" ;
+		:history = "Fri Mar 29 12:38:14 2013: GDAL CreateCopy( data/fpuRegionMask.nc4, ... )" ;
+}
+#+end_example
+
+CDO does ASCII art!  The values are reclassified but it's still a
+good check.  A legend is included in the output below the map.
+
+#+BEGIN_SRC sh
+  cdo map -invertlat -remapnn,r72x36 data/fpuRegionMask.nc4
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+cdo map: Started child process "invertlat -remapnn,r72x36 data/fpuRegionMask.nc4 (pipe1.1)".
+cdo(2) invertlat: Started child process "remapnn,r72x36 data/fpuRegionMask.nc4 (pipe2.1)".
+    -1 :       Date     Time   Level Gridsize    Miss :     Minimum        Mean     Maximum : Parameter ID
+  0%  1%  2%  3%  4%  5%  6%  7%  8%  9% 10% 11% 12% 13% 14% 15% 16% 17% 18% 19% 20% 21% 22% 23% 24% 25% 26% 27% 28% 29% 30% 31% 32% 33% 34% 35% 36% 37% 38% 39% 40% 41% 42% 43% 44% 45% 46% 47% 48% 49% 50% 51% 52% 53% 54% 55% 56% 57% 58% 59% 60% 61% 62% 63% 64% 65% 66% 67% 68% 69% 70% 71% 72% 73% 74% 75% 76% 77% 78% 79% 80% 81% 82% 83% 84% 85% 86% 87% 88% 89% 90% 91% 92% 93% 94% 95% 96% 97% 98% 99%100%                         1 : 0000-00-00 00:00:00       0     2592    1933 :      1.0000      6.9393      13.000 : -1         
+
+   000000000111111111122222222223333333333444444444455555555556666666666777
+   123456789012345678901234567890123456789012345678901234567890123456789012
+
+01 ........................................................................ 01
+02 ........................................................8888...33333.... 02
+03 ....................22............................8888888.33333333333... 03
+04 ...........2..22.222222222...2..................888888.88....3333333.... 04
+05 ...MMMM222222222222222222222222222222..88888888888888888.888..3333...... 05
+06 ..MM.MM22222222222222222222222222222....88888888888888....88..33........ 06
+07 ..MM.222222222222222222222222...2........8...888888888...888...........M 07
+08 MMM22222222222222222222211222..................888888888.8888........... 08
+09 MMMM222222222222221111111112....................888888888888.8.......... 09
+10 M.M.M2...2.2222221111111111.11..................8888888888.............M 10
+11 ...M..6666.22222111111111...1...................8888888888.............M 11
+12 777....666666233111111111.1......................88888888..............7 12
+13 7777777.66.66333333311111........................0000...8............777 13
+14 7775777766666.3333381811..........................000...0............755 14
+15 55555777.666...33..888..8...........................000..............555 15
+16 5555577756.....33...88.................................0.............555 16
+17 55555775555.....3...8....8..............................04444.........55 17
+18 ..55555555..........8..8.................................44444.......... 18
+19 ..5555555............8.88.888...........................444444444....... 19
+20 ...555555.............8...8.8m...........................444444444...... 20
+21 ...555555.5................m.............................44444444....... 21
+22 ...55555.55..............mmmmm............................4444444....... 22
+23 ...55555.5.............mmmmmmmm...........................444444........ 23
+24 ....555................mmmmmmmm...........................44444......... 24
+25 ....55..................mm.mmmm...........................4444.......... 25
+26 .............................mm....m......................444........... 26
+27 ..........................................................44............ 27
+28 .........................................................44............. 28
+29 ..........................................................4............. 29
+30 ........................................................................ 30
+31 ........................................................................ 31
+32 ........................................................................ 32
+33 ........................................................................ 33
+34 ........................................................................ 34
+35 ........................................................................ 35
+36 ........................................................................ 36
+
+   000000000111111111122222222223333333333444444444455555555556666666666777
+   123456789012345678901234567890123456789012345678901234567890123456789012
+
+0=[+1.000e+00,+2.400e+00]  1=[+2.400e+00,+3.600e+00]  2=[+3.600e+00,+4.800e+00]
+3=[+4.800e+00,+6.000e+00]  4=[+6.000e+00,+7.200e+00]  5=[+7.200e+00,+8.400e+00]
+6=[+8.400e+00,+9.600e+00]  7=[+9.600e+00,+1.080e+01]  8=[+1.080e+01,+1.200e+01]
+9=[+1.200e+01,+1.300e+01]  *=0  .=miss  m=min=+1.000e+00  M=max=+1.300e+01
+
+cdo(3) remapnn: Processed 259200 values from 1 variable over 1 timestep ( 0.53s )
+cdo(2) invertlat: Processed 2592 values from 1 variable over 1 timestep ( 0.53s )
+cdo map: Processed 2592 values from 1 variable over 1 timestep ( 0.53s )
+#+end_example
+
+
+*** Remap
+
+#+BEGIN_SRC sh
+  cdo remapnn,n80 -setname,fpuRegion data/fpuRegionMask.nc4 data/fpuRegionMaskT106.nc4
+#+END_SRC
+
+#+RESULTS:
+: cdo remapnn: Started child process "setname,fpuRegion data/fpuRegionMask.nc4 (pipe1.1)".
+:   0%  1%  2%  3%  4%  5%  6%  7%  8%  9% 10% 11% 12% 13% 14% 15% 16% 17% 18% 19% 20% 21% 22% 23% 24% 25% 26% 27% 28% 29% 30% 31% 32% 33% 34% 35% 36% 37% 38% 39% 40% 41% 42% 43% 44% 45% 46% 47% 48% 49% 50% 51% 52% 53% 54% 55% 56% 57% 58% 59% 60% 61% 62% 63% 64% 65% 66% 67% 68% 69% 70% 71% 72% 73% 74% 75% 76% 77% 78% 79% 80% 81% 82% 83% 84% 85% 86% 87% 88% 89% 90% 91% 92% 93% 94% 95% 96% 97% 98% 99%100%                 cdo(2) setname: Processed 259200 values from 1 variable over 1 timestep ( 8.24s )
+: cdo remapnn: Processed 259200 values from 1 variable over 1 timestep ( 8.24s )
+
+#+BEGIN_SRC sh
+  cdo infon data/fpuRegionMaskT106.nc4
+#+END_SRC
+
+#+RESULTS:
+: -1 :       Date     Time   Level Gridsize    Miss :     Minimum        Mean     Maximum : Parameter name
+:      1 : 0000-00-00 00:00:00       0    51200   38078 :      1.0000      6.9418      13.000 : fpuRegion  
+: cdo infon: Processed 51200 values from 1 variable over 1 timestep ( 0.00s )
+
